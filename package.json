@@ -1,0 +1,22 @@
+{
+  "name": "contentscraper",
+  "version": "0.0.1",
+  "description": "",
+  "main": "scraper.js",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "csv-write-stream": "^2.0.0",
+    "express": "^4.16.3",
+    "got": "^8.3.0",
+    "metascraper": "^3.9.2",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Madhavi Sankholkar",
+  "license": "MIT",
+  "scripts": { "start" : "node ./scraper.js" }
+}
