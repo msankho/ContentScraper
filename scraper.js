@@ -17,16 +17,21 @@ function create_error_log(message){
   fs.appendFileSync('./scraper-error.log', `[${d}] ${message}\n`);
 }
 
+function get_timestamp(){
+  var newDate = new Date();
+  return `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`;
+}
+
 app.get('/scrape', (req, res)=>{
 
     var newDate = new Date();
-    var tmStamp = `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`;
+    var tmStamp = get_timestamp();
 
     if(!fs.existsSync('./data')){
       fs.mkdirSync('./data');
     }
 
-    var writer = csvWriter({headers: ["Title", "Price", "ImageURL", "URL"]});
+    var writer = csvWriter({headers: ["Title", "Price", "ImageURL", "URL", "Time"]});
     writer.pipe(fs.createWriteStream(`./data/${tmStamp}.csv`));
 
     var baseurl = 'http://shirts4mike.com/';
@@ -71,7 +76,7 @@ app.get('/scrape', (req, res)=>{
           rp(shirtOptions)
             .then(function($){
 
-              var shirt = {name:"", price:"", imageURL: "", shirtURL: ""};
+              var shirt = {name:"", price:"", imageURL: "", shirtURL: "", time:""};
 
               shirt.shirtURL = shirtOptions.uri;
 
@@ -80,8 +85,10 @@ app.get('/scrape', (req, res)=>{
               $('.shirt-details h1').filter(function(){shirt.name = $(this).text().substr(4);});
 
               $('.shirt-picture span img').filter(function() {shirt.imageURL = baseurl + $(this).attr('src');});
+              var d = new Date();
 
-              writer.write([shirt.name, shirt.price, shirt.imageURL, shirt.shirtURL])
+              shirt.time = d.getTime();
+              writer.write([shirt.name, shirt.price, shirt.imageURL, shirt.shirtURL, shirt.time]);
 
             })            
             .catch(function(error){
